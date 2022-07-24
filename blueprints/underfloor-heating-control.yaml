@@ -1,0 +1,98 @@
+blueprint:
+  name: Underfloor heating control
+  description: ''
+  domain: automation
+  input:
+    switch:
+      name: Switch
+      description: Switch to turn on/off
+      selector:
+        device: {}
+    turn_on:
+      name: Turn on
+      description: Action to run when conditions are met to turn on heating
+      selector:
+        action: {}
+    turn_off:
+      name: Turn off
+      description: Action to run when conditions are met to turn off heating
+      selector:
+        action: {}
+    indoor_temperature:
+      name: Indoor temperature
+      description: Indoor temperature
+      selector:
+        entity: {}
+    outdoor_temperature:
+      name: Outdoor temperature
+      description: Outdoor temperature sensor
+      selector:
+        entity: {}
+    outdoor_temperature_forecast:
+      name: Outdoor temperature forecast
+      description: Outdoor temperature from forecast
+      selector:
+        entity: {}
+    turn_off_time:
+      name: Turn off time
+      description: Time when heating should be turned off
+      selector:
+        time:
+    turn_on_time:
+      name: Turn on time
+      description: Time when heating should be turned on
+      selector:
+        time:
+
+
+mode: single
+max_axceeded: silent
+variables:
+  outdoor_temperature: !input outdoor_temperature
+  outdoor_temperature_forecast: !input outdoor_temperature_forecast
+  indoor_temperature: !input indoor_temperature
+  input_switch: !input switch
+  off_time: !input turn_off_time
+  on_time: !input turn_on_time
+trigger:
+  platform: time_pattern
+  minutes: /30
+condition: ''
+action:
+  - choose:
+      - conditions:
+          condition: or
+          conditions:
+            - condition: and
+              conditions:
+                - condition: 'template'
+                  value_template: '{{ outdoor_temperature <  15 }}'
+                - condition: 'template'
+                  value_template: '{{ outdoor_temperature_forecast < 15 }}'
+                - condition: time
+                  after: on_time
+                  before: off_time
+            - condition: and
+              conditions:
+                - condition: device
+                  type: is_off
+                  device: input_switch
+                  domain: switch
+                  for:
+                    hours: 2
+                    minutes: 0
+                    seconds: 0
+                - condition: 'template'
+                  value_template: '{{ indoor_temperature < 23 }}'
+                - condition: time
+                  after: on_time
+                  before: off_time
+        sequence:
+          - type: turn_on
+            device: input_switch
+            domain: switch
+    default:
+      - type: turn_off
+        device: input_switch
+        domain: switch
+
