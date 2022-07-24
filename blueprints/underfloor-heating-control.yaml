@@ -8,16 +8,6 @@ blueprint:
       description: Switch to turn on/off
       selector:
         device: {}
-    turn_on:
-      name: Turn on
-      description: Action to run when conditions are met to turn on heating
-      selector:
-        action: {}
-    turn_off:
-      name: Turn off
-      description: Action to run when conditions are met to turn off heating
-      selector:
-        action: {}
     indoor_temperature:
       name: Indoor temperature
       description: Indoor temperature
