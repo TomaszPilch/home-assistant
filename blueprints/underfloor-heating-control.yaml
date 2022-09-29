@@ -56,8 +56,8 @@ action:
                 - condition: 'template'
                   value_template: '{{ requested_temperature < indoor_temperature }}'
                 - condition: time
-                  after: on_time
-                  before: off_time
+                  after: !input turn_on_time
+                  before: !input turn_off_time
             - condition: and
               conditions:
                 - condition: device
@@ -71,8 +71,8 @@ action:
                 - condition: 'template'
                   value_template: '{{ requested_temperature < indoor_temperature }}'
                 - condition: time
-                  after: on_time
-                  before: off_time
+                  after: !input turn_on_time
+                  before: !input turn_off_time
         sequence:
           - type: turn_on
             device: input_switch
