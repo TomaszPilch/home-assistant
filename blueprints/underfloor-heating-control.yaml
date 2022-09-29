@@ -13,14 +13,14 @@ blueprint:
       description: Indoor temperature
       selector:
         entity: {}
+    requested_temperature:
+      name: Requested temperature
+      description: Requested temperature
+      selector:
+        entity: {}
     outdoor_temperature:
       name: Outdoor temperature
       description: Outdoor temperature sensor
-      selector:
-        entity: {}
-    outdoor_temperature_forecast:
-      name: Outdoor temperature forecast
-      description: Outdoor temperature from forecast
       selector:
         entity: {}
     turn_off_time:
@@ -33,14 +33,10 @@ blueprint:
       description: Time when heating should be turned on
       selector:
         time:
-
-
-mode: single
-max_axceeded: silent
 variables:
   outdoor_temperature: !input outdoor_temperature
-  outdoor_temperature_forecast: !input outdoor_temperature_forecast
   indoor_temperature: !input indoor_temperature
+  requested_temperature: !input requested_temperature
   input_switch: !input switch
   off_time: !input turn_off_time
   on_time: !input turn_on_time
@@ -56,9 +52,9 @@ action:
             - condition: and
               conditions:
                 - condition: 'template'
-                  value_template: '{{ outdoor_temperature <  15 }}'
+                  value_template: '{{ outdoor_temperature <  20 }}'
                 - condition: 'template'
-                  value_template: '{{ outdoor_temperature_forecast < 15 }}'
+                  value_template: '{{ requested_temperature < indoor_temperature }}'
                 - condition: time
                   after: on_time
                   before: off_time
@@ -73,7 +69,7 @@ action:
                     minutes: 0
                     seconds: 0
                 - condition: 'template'
-                  value_template: '{{ indoor_temperature < 23 }}'
+                  value_template: '{{ requested_temperature < indoor_temperature }}'
                 - condition: time
                   after: on_time
                   before: off_time
@@ -85,4 +81,5 @@ action:
       - type: turn_off
         device: input_switch
         domain: switch
-
+mode: single
+max_axceeded: silent
