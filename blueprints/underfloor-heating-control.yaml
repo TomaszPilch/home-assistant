@@ -52,7 +52,7 @@ action:
             - condition: and
               conditions:
                 - condition: 'template'
-                  value_template: '{{ outdoor_temperature <  20 }}'
+                  value_template: "{{ outdoor_temperature <  20 }}"
                 - condition: 'template'
                   value_template: '{{ requested_temperature < indoor_temperature }}'
                 - condition: time
@@ -82,4 +82,3 @@ action:
         device: input_switch
         domain: switch
 mode: single
-max_axceeded: silent
